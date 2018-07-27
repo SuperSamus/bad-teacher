@@ -1,5 +1,4 @@
 import operator
-from time import sleep
 
 
 class Student:
@@ -14,7 +13,7 @@ class Student:
 
     def getName(self):
         return f"{self.surname}{' ' if self.name else ''}{self.name}"
-   
+
     def __repr__(self):
         return f"{f'{self.name()} ({self.index})' if self.surname or self.name else f'No name, index {self.index}'}, {'accounted' if self.accounted else 'absent'}, {self.probability}%, {len(self.pages)} pages ({', '.join(self.pages)})"
 
@@ -64,4 +63,3 @@ def sumDigits(n):
 
 
 studentList = StudentList()
-pass
