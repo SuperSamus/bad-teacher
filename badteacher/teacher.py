@@ -1,5 +1,6 @@
 class Student:
     index = 0
+    # in case he's been called yesterday or he's absent
     interrogable = True
     pages = set()
     _percentage = 0
@@ -11,6 +12,7 @@ class Student:
     def get_name(self):
         return f"{self.surname}{' ' if self.name else ''}{self.name}"
 
+    # computers prefer integers than floats
     @property
     def percentage(self):
         return self._percentage/100
@@ -49,6 +51,7 @@ class Student:
 
 
 class StudentList:
+    # the list of students
     list = []
     n_pages = 0
     # the pages that will call an absent student or an out of range student
@@ -64,6 +67,7 @@ class StudentList:
     def invalid_percentage(self, percentage):
         self._invalid_percentage = round(percentage * 100)
 
+    # creates unnnamed students
     def create_students(self, number):
         self.list = [Student() for i in range(number)]
         self.update()
@@ -80,6 +84,7 @@ class StudentList:
                     f"if {value} == s.{key}:\n\tsearch_list.add(s.index-1)")
         return list(search_list)
 
+    # reorders the students
     def update(self):
         self._sort_alphabetically()
         self._index_students()

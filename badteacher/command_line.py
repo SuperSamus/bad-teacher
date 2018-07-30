@@ -1,6 +1,7 @@
 import teacher
 
 
+# error handling
 def int_input(prompt, blank=False):
     while True:
         try:
