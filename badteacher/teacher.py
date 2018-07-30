@@ -21,14 +21,31 @@ class Student:
 
     def calculate_percentage(self, n_pages, n_students, interrogable_students):
         if self.interrogable:
-            self._percentage = len(self.pages) * n_students * \
+            self.percentage = len(self.pages) * n_students * \
                 100 / n_pages / interrogable_students
 
     def __repr__(self):
-        return f"{f'{self.get_name()} ({self.index})' if self.surname or self.name else f'No name, index {self.index}'}, {'interrogable' if self.interrogable else 'absent'}, {self.percentage}%, {len(self.pages)} pages ({', '.join(str(p) for p in self.pages)});"
+        if self.surname or self.name:
+            name = f"{self.get_name()} ({self.index})"
+        else:
+            name = f"No name, index {self.index}"
+        if self.interrogable:
+            status = "interrogable"
+        else:
+            status = "not interrogable"
+        pg = f"{len(self.pages)} pages ({join_list(sorted(self.pages), ', ')})"
+        return f"{name}, {status}, {self.percentage}%, {pg};"
 
     def __str__(self):
-        return f"{f'{self.get_name()} ({self.index})' if self.surname or self.name else f'{self.index}'}: {self.percentage}%, {len(self.pages)} pages ({', '.join(str(p) for p in self.pages)});" if self.interrogable else "Absent;"
+        if self.surname or self.name:
+            name = f"{self.get_name()} ({self.index})"
+        else:
+            name = self.index
+        pg = f"{len(self.pages)} pages ({join_list(sorted(self.pages), ', ')})"
+        if self.interrogable:
+            return f"{name}: {self.percentage}%, {pg};"
+        else:
+            return f"{name}: not interrogable;"
 
 
 class StudentList:
@@ -60,7 +77,7 @@ class StudentList:
         for key, value in kwargs.items():
             for s in self.list:
                 exec(
-                    f"if {value} == s.{key}:\n\t\t\t\t\tsearch_list.add(s.index-1)")
+                    f"if {value} == s.{key}:\n\tsearch_list.add(s.index-1)")
         return list(search_list)
 
     def update(self):
@@ -68,8 +85,8 @@ class StudentList:
         self._index_students()
 
     def _sort_alphabetically(self):
-        self.list = sorted(sorted(
-            self.list, key=lambda student: student.name), key=lambda s: s.surname)
+        self.list = sorted(self.list, key=lambda s: s.name)
+        self.list = sorted(self.list, key=lambda s: s.surname)
 
     def _index_students(self):
         ind = 1
@@ -94,7 +111,8 @@ class StudentList:
                 s = self.list[sum_digits(p)-1]
                 assert s.interrogable
                 s.pages.add(p)
-            except (AssertionError, IndexError):  # absent students or out of range will go there
+            # absent students or out of range will go there
+            except (AssertionError, IndexError):
                 self.invalid_pages.add(p)
 
     def _calculate_student_percentage(self):
@@ -115,10 +133,19 @@ class StudentList:
         self._calculate_student_percentage()
 
     def __repr__(self):
-        return f"{', '.join([str(i) for i in self.list])}, invalid percentage = {self.invalid_percentage}%, {len(self.invalid_pages)} pages: {', '.join(str(p) for p in self.invalid_pages)}."
+        lst = join_list(self.list, ", ")
+        i_per = f"invalid percentage = {self.invalid_percentage}%"
+        i_pag = f"{len(self.invalid_pages)} pages:"\
+            f" {join_list(sorted(self.invalid_pages), ', ')}"
+        return f"{lst}, {i_per}, {i_pag}."
 
     def __str__(self):
-        return str('\n'.join([str(i) for i in self.list])) + f"\n\nProbabality to get an uninterrogable student = {self.invalid_percentage}%, {len(self.invalid_pages)} pages: {', '.join(str(p) for p in self.invalid_pages)}."
+        lst = join_list(self.list)
+        i_per = f"Probability to call an uninterrogable student"\
+            f" = {self.invalid_percentage}%"
+        i_pag = f"{len(self.invalid_pages)} pages:"\
+            f" {join_list(sorted(self.invalid_pages), ', ')}"
+        return f"{lst}\n\n{i_per}, {i_pag}."
 
 
 def sum_digits(n):
@@ -127,3 +154,7 @@ def sum_digits(n):
         s += n % 10
         n //= 10
     return s
+
+
+def join_list(lst, st="\n"):
+    return st.join(str(i) for i in lst)

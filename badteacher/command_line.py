@@ -19,7 +19,8 @@ student_list = teacher.StudentList()
 student_list.create_students(int_input("Select the number of students: "))
 student_list.n_pages = int_input("How many pages are there in the book? ")
 inp = int_input(
-    "Is there any uninterrogable student? Write its index, otherwise press enter: ", True)
+    "Is there any uninterrogable student?"
+    " Write its index, otherwise press enter: ", True)
 while True:
     if inp == "":
         break
